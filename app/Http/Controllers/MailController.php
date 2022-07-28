@@ -23,7 +23,7 @@ class MailController extends Controller
     public function send($id, $tokenPage)
     {
         $token = Auth::user()->token;
-        $data = $this->facebook->getPostByPageId($token, $id, $tokenPage);
+        $data = $this->facebook->get_page_posts($token, $id, $tokenPage);
 
         $cnt = 0;
         foreach ($data as $item) {
