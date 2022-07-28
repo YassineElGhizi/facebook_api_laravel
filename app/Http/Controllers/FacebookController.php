@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Session;
 
 class FacebookController extends Controller
 {
-
     protected $facebook;
 
     public function __construct()
@@ -52,20 +51,13 @@ class FacebookController extends Controller
         $user->facebook_app_id = $data['user_id'];
         $user->picture = $data['user_picture'];
 
-
-        // if user exist set auth else created (remember user) save data in database
+        // if the user exist
         $credentials = ["email" => $user->email, "password" => $data['user_id']];
-
         if (Auth::attempt($credentials)) {
         } else {
             Auth::login($user, true);
         }
-        $this->goToHomePage();
 
-    }
-
-    public function goToHomePage()
-    {
         $pages = $this->facebook->getPages(Auth::user()->token);
 
         $collection = [];
@@ -77,8 +69,8 @@ class FacebookController extends Controller
             $page->image = $item["image"];
 
             array_push($collection, $page);
-
         }
+
         $pages = $collection;
         return view('home', compact('pages'));
     }
@@ -86,7 +78,7 @@ class FacebookController extends Controller
     public function get_post($id, $tokenPage)
     {
         $token = Auth::user()->token;
-        $data = $this->facebook->getPostByPageId($token, $id, $tokenPage);
+        $data = $this->facebook->get_page_posts($token, $id, $tokenPage);
 
         $collection = [];
         foreach ($data as $item) {
@@ -94,15 +86,11 @@ class FacebookController extends Controller
             $post->created_time = isset($item["created_time"]) ? $item["created_time"] : null;
             $post->id_page = $item["id"];
             $post->message = isset($item["message"]) ? $item["message"] : null;
-            $post->story = isset($item['story']) ? $item['story'] : null;
             $post->full_picture = isset($item['full_picture']) ? $item['full_picture'] : null;
-            $post->is_published = isset($item['is_published']) ? $item['is_published'] : null;
             $post->scheduled_publish_time = isset($item['scheduled_publish_time']) ? $item['scheduled_publish_time'] : null;
 
             if ($post->message != null)
                 $post->type = "message";
-            else if ($post->story != null)
-                $post->type = "story";
             else if ($post->full_picture != null)
                 $post->type = "image";
             else
@@ -114,29 +102,6 @@ class FacebookController extends Controller
         return View("post", ['posts' => $collection, "idpage" => $id, "tokenPage" => $tokenPage]);
     }
 
-
-    public function getPostByPageId($accessToken, $pageId, $tokenPage)
-    {
-
-        $data = [];
-        // here i send to request for get post published and  scheduled_posts and i merge all data
-        try {
-            $response = $this->facebook->get('/' . $pageId . "/posts?fields=message,story,full_picture,is_published,scheduled_publish_time,created_time", $accessToken);
-            $responseSchedule = $this->facebook->get('/' . $pageId . "/scheduled_posts?fields=message,story,full_picture,is_published,scheduled_publish_time,created_time", $tokenPage);
-
-
-            $response = $response->getGraphEdge()->asArray();
-            if (isset($responseSchedule))
-                return array_merge($response, $responseSchedule->getGraphEdge()->asArray());
-
-            return $response;
-
-        } catch (FacebookResponseException $e) {
-        } catch (FacebookSDKException $e) {
-        }
-    }
-
-
     public function create_post(Request $request)
     {
         $isSchedule = $request->inlineCheckbox1;
@@ -144,7 +109,6 @@ class FacebookController extends Controller
         $date = $request->dateSchedule;
         $tokenPage = $request->tokenPage;
         $accountId = $request->idpage;
-
 
         $images = (isset($request->fileUpload)) ? $request->fileUpload : [];
 
@@ -160,8 +124,5 @@ class FacebookController extends Controller
 
         Session::flash('message', "Post Has Been created successfully");
         return back();
-
     }
-
-
 }

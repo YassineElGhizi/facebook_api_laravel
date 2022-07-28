@@ -9,11 +9,8 @@ use Facebook\Facebook;
 
 class FacebookService extends ServiceProvider
 {
-
     protected $facebook;
 
-
-    // in this class  i use the package graph fb  to do all processing
     public function __construct()
     {
         $this->facebook = new Facebook([
@@ -24,27 +21,15 @@ class FacebookService extends ServiceProvider
         ]);
     }
 
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
+    public function delete_post_by_id($post_id, $page_token, $user_token)
     {
-        //
+        return $this->facebook->delete("/" . $post_id . "?access_token=" . $page_token);
     }
 
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function update_post_by_id($post_id, $page_token, $message)
     {
-
-
+        return $this->facebook->post("/" . $post_id . "?message=" . $message . "&access_token=" . $page_token);
     }
-
 
     public function redirectTo()
     {
@@ -55,16 +40,12 @@ class FacebookService extends ServiceProvider
             'pages_read_engagement'
         ];
 
-        $redirectUri = "http://localhost:8000/" . '/auth/facebook/callback';
-
-        return $helper->getLoginUrl($redirectUri, $permissions);
+        return $helper->getLoginUrl("http://localhost:8000/auth/facebook/callback", $permissions);
     }
-
 
     public function handleCallback()
     {
         $helper = $this->facebook->getRedirectLoginHelper();
-
 
         if (request('state')) {
             $helper->getPersistentDataHandler()->set('state', request('state'));
@@ -87,7 +68,6 @@ class FacebookService extends ServiceProvider
             }
         };
 
-
         $this->facebook->setDefaultAccessToken($accessToken->getValue());
         $profileRequest = $this->facebook->get('/me?fields=name,first_name,last_name,email,link,gender,locale,cover,picture');
         $fbUserProfile = $profileRequest->getGraphNode()->asArray();
@@ -101,10 +81,7 @@ class FacebookService extends ServiceProvider
             "user_picture" => $fbUserProfile['picture']['url']
         ];
 
-
         return $data;
-
-
     }
 
 
@@ -123,7 +100,6 @@ class FacebookService extends ServiceProvider
         }, $pages);
     }
 
-
     private function postData($accessToken, $endpoint, $data)
     {
         try {
@@ -136,17 +112,6 @@ class FacebookService extends ServiceProvider
             throw new Exception($e->getMessage(), $e->getCode());
         }
     }
-
-    public function delete_post_by_id($post_id, $page_token, $user_token)
-    {
-        return $this->facebook->delete("/" . $post_id . "?access_token=" . $page_token);
-    }
-
-    public function update_post_by_id($post_id, $page_token, $message)
-    {
-        return $this->facebook->post("/" . $post_id . "?message=" . $message . "&access_token=" . $page_token);
-    }
-
 
     public function post($accountId, $accessToken, $data, $images = [])
     {
@@ -162,7 +127,6 @@ class FacebookService extends ServiceProvider
         } catch (\Exception $e) {
         }
     }
-
 
     private function uploadImages($accountId, $accessToken, $images = [])
     {
@@ -196,16 +160,12 @@ class FacebookService extends ServiceProvider
         return $attachments;
     }
 
-
-    public function getPostByPageId($accessToken, $pageId, $tokenPage)
+    public function get_page_posts($accessToken, $pageId, $tokenPage)
     {
-
         $data = [];
-        // here i send to request for get post published and  scheduled_posts and i merge all data
         try {
             $response = $this->facebook->get('/' . $pageId . "/posts?fields=message,story,full_picture,is_published,scheduled_publish_time,created_time", $accessToken);
             $responseSchedule = $this->facebook->get('/' . $pageId . "/scheduled_posts?fields=message,story,full_picture,is_published,scheduled_publish_time,created_time", $tokenPage);
-
 
             $response = $response->getGraphEdge()->asArray();
             if (isset($responseSchedule))
@@ -216,6 +176,5 @@ class FacebookService extends ServiceProvider
         } catch (FacebookResponseException $e) {
         } catch (FacebookSDKException $e) {
         }
-
     }
 }

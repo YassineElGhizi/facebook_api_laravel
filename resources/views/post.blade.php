@@ -11,8 +11,7 @@
 
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">{{ __('Listes Posts') }}
-
+                <div class="card-header">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         New Post
                     </button>
@@ -22,9 +21,9 @@
                     <table class="table table-bordered" border="1">
                         <thead>
                         <tr>
-                            <th scope="col">post ID</th>
+
+                            <th scope="col">Post</th>
                             <th scope="col">TYPE</th>
-                            <th scope="col">text</th>
                             <th scope="col">date</th>
                             <th scope="col">file</th>
                             <th scope="col">Action</th>
@@ -35,15 +34,14 @@
 
                         @foreach ($posts as $item)
 
-                            <tr class="{{'published-'.$item->is_published}}">
+                            <tr>
 
-                                <td>{{$item->id_page}} </td>
+                                <td>{{$item->message}}</td>
                                 <td>{{$item->type}}</td>
-                                <td>{{$item->message." ".$item->story}}</td>
                                 <td> {{ $item->created_time->format('d-m-Y h:m')}}</td>
                                 <td>
                                     @if($item->full_picture!=null)
-                                        <img src="{{$item->full_picture}}" alt="" style="width: 5rem" >
+                                        <img src="{{$item->full_picture}}" alt="" style="width: 5rem">
                                     @endif
                                 </td>
                                 <td>
@@ -51,13 +49,13 @@
                                         @csrf
                                         <input hidden type="text" name="page_token" value="{{$tokenPage}}">
                                         <input hidden type="text" name="page_id" value="{{$item->id_page}}">
-                                        <button type="submit" class="btn btn-danger" >Delete</button>
+                                        <button type="submit" class="btn btn-danger">Delete</button>
                                     </form>
                                     <form action="/update_post" method="post">
                                         @csrf
                                         <input hidden type="text" name="page_token" value="{{$tokenPage}}">
                                         <input hidden type="text" name="page_id" value="{{$item->id_page}}">
-                                        <button type="submit" class="btn btn-warning" >Update</button>
+                                        <button type="submit" class="btn btn-warning">Update</button>
                                         <input type="text" name="new_message" placeholder="New Message value">
                                     </form>
 
@@ -92,7 +90,7 @@
 
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">Post Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                     </div>
 
                     <div class="form-group">
