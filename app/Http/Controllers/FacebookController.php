@@ -28,10 +28,7 @@ class FacebookController extends Controller
 
     public function handle_callback()
     {
-
-
         $data = $this->facebook->handleCallback();
-
 
         $user = new User();
         $user->name = $data['user_Fname'] . " " . $data['user_Lname'];
@@ -49,7 +46,6 @@ class FacebookController extends Controller
         } else {
             Auth::login($user, true);
         }
-        // after login go to page home and show liste pages
         $this->goToHomePage();
 
     }
@@ -70,29 +66,22 @@ class FacebookController extends Controller
 
         }
         $pages = $collection;
-        //var_dump($pages);
         return view('home', compact('pages'));
     }
 
     public function get_post($id, $tokenPage)
     {
-
         $token = Auth::user()->token;
-        // get data by id page
         $data = $this->facebook->getPostByPageId($token, $id, $tokenPage);
 
-        // prepare data
         $collection = [];
         foreach ($data as $item) {
             $post = new Post();
             $post->created_time = isset($item["created_time"]) ? $item["created_time"] : null;
             $post->id_page = $item["id"];
-
-
             $post->message = isset($item["message"]) ? $item["message"] : null;
             $post->story = isset($item['story']) ? $item['story'] : null;
             $post->full_picture = isset($item['full_picture']) ? $item['full_picture'] : null;
-
             $post->is_published = isset($item['is_published']) ? $item['is_published'] : null;
             $post->scheduled_publish_time = isset($item['scheduled_publish_time']) ? $item['scheduled_publish_time'] : null;
 

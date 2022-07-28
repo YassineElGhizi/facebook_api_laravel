@@ -26,6 +26,10 @@ Route::group(['prefix' => 'auth/facebook'], function () {
     Route::get('/callback', [\App\Http\Controllers\FacebookController::class, 'handle_callback']);
 });
 
+#Post Related
 Route::get('/get_post/{id}-{token}', [\App\Http\Controllers\FacebookController::class, 'get_post']);
 Route::post('/post', [\App\Http\Controllers\FacebookController::class, 'create_post']);
 Route::post('/delete_post', [\App\Http\Controllers\FacebookController::class, 'delete_post']);
+
+#Mail Related
+Route::get('/mail/{id}-{token}', [\App\Http\Controllers\MailController::class, 'send']);

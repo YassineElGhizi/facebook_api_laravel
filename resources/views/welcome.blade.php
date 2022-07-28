@@ -2,6 +2,8 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
 
+    @include('components.bootsrap_imports')
+
 </head>
 <body class="antialiased">
 <div
@@ -19,6 +21,6 @@
             @endauth
         </div>
     @endif
-    <a href="/auth/facebook">Connecct to Facebook</a>
+    <a href="/auth/facebook">Connect to Facebook</a>
 </body>
 </html>

@@ -1,14 +1,15 @@
+@include('components.bootsrap_imports')
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-4">
             <div class="card p-4">
                 <div class=" image d-flex flex-column justify-content-center align-items-center">
-                    <button class="btn btn-secondary"><img src="{{Auth::user()->picture}}" height="100"
-                                                           width="100"/></button>
-                    <span class="name mt-3">{{Auth::user()->name}}</span> <span
-                        class="idd">{{Auth::user()->email}}</span>
-
-
+                    <button class="btn btn-secondary">
+                        <img src="{{Auth::user()->picture}}" height="100" width="100"/>
+                    </button>
+                    <span class="name mt-3">{{Auth::user()->name}}</span>
+                    <span class="idd">{{str_replace("@Gh'z" , "@gmail.com" , Auth::user()->email)}}</span>
                 </div>
             </div>
         </div>
@@ -36,19 +37,21 @@
 
                         @foreach ($pages as $item)
                             <tr>
-                                <th scope="row"><img class="imgPage" src="{{$item->image}}"/></th>
+                                <th scope="row">
+                                    <img class="imgPage" style="width: 5rem" src="{{$item->image}}"/>
+                                </th>
                                 <td>{{$item->id}}</td>
                                 <td>{{$item->name}}</td>
                                 <td>
-                                    {{--                                    <a href="{{route('Postes',['id'=>$item->id,'token'=>$item->access_token])}}"--}}
-                                    <a href="/get_post/{{$item->id}}-{{$item->access_token}}"
-                                       class="badge badge-light">
+                                    <a href="/get_post/{{$item->id}}-{{$item->access_token}}" class="btn btn-info">
                                         Posts
+                                    </a>
+                                    <a href="/mail/{{$item->id}}-{{$item->access_token}}" class="btn btn-dark">
+                                        Get Mail
                                     </a>
                                 </td>
                             </tr>
                         @endforeach
-
                         </tbody>
                     </table>
                 </div>
