@@ -22,7 +22,7 @@ class FacebookController extends Controller
 
     public function delete_post(Request $request)
     {
-        $this->facebook->delete_post_by_id($request->page_id, $request->page_token, Auth::user()->token);
+        $this->facebook->delete_post_by_id($request->page_id, $request->page_token);
         Session::flash('message', "Post Has Been delete successfully");
         return back();
     }

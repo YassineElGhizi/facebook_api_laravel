@@ -21,7 +21,7 @@ class FacebookService extends ServiceProvider
         ]);
     }
 
-    public function delete_post_by_id($post_id, $page_token, $user_token)
+    public function delete_post_by_id($post_id, $page_token)
     {
         return $this->facebook->delete("/" . $post_id . "?access_token=" . $page_token);
     }
@@ -40,7 +40,7 @@ class FacebookService extends ServiceProvider
             'pages_read_engagement'
         ];
 
-        return $helper->getLoginUrl("http://localhost:8000/auth/facebook/callback", $permissions);
+        return $helper->getLoginUrl(env('APP_URL', false) . ":8000/auth/facebook/callback", $permissions);
     }
 
     public function handleCallback()
