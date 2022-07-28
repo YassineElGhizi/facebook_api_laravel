@@ -79,7 +79,6 @@ class FacebookController extends Controller
     {
         $token = Auth::user()->token;
         $data = $this->facebook->get_page_posts($token, $id, $tokenPage);
-
         $collection = [];
         foreach ($data as $item) {
             $post = new Post();
@@ -87,7 +86,7 @@ class FacebookController extends Controller
             $post->id_page = $item["id"];
             $post->message = isset($item["message"]) ? $item["message"] : null;
             $post->full_picture = isset($item['full_picture']) ? $item['full_picture'] : null;
-            $post->scheduled_publish_time = isset($item['scheduled_publish_time']) ? $item['scheduled_publish_time'] : null;
+            $post->scheduled_publish_time = isset($item['scheduled_publish_time']) ? date("Y-m-d H:i:s", $item['scheduled_publish_time']) : null;
 
             if ($post->message != null)
                 $post->type = "message";

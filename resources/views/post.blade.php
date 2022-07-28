@@ -26,6 +26,7 @@
                             <th scope="col">TYPE</th>
                             <th scope="col">date</th>
                             <th scope="col">file</th>
+                            <th scope="col">Scheduled</th>
                             <th scope="col">Action</th>
 
                         </tr>
@@ -43,6 +44,9 @@
                                     @if($item->full_picture!=null)
                                         <img src="{{$item->full_picture}}" alt="" style="width: 5rem">
                                     @endif
+                                </td>
+                                <td>
+                                    {{$item->scheduled_publish_time}}
                                 </td>
                                 <td>
                                     <form action="/delete_post" method="post">
