@@ -21,6 +21,7 @@
             @endauth
         </div>
     @endif
-    <a href="/auth/facebook">Connect to Facebook</a>
+        <a href="/auth/facebook">Connect to Facebook</a>
+</div>
 </body>
 </html>

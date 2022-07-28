@@ -1,6 +1,11 @@
 @include('components.bootsrap_imports')
 
 <div class="container">
+
+    @if(Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    @endif
+
     <div class="row justify-content-center">
         <div class="col-md-4">
             <div class="card p-4">
@@ -44,7 +49,7 @@
                                 <td>{{$item->name}}</td>
                                 <td>
                                     <a href="/get_post/{{$item->id}}-{{$item->access_token}}" class="btn btn-info">
-                                        Posts
+                                        Go To Posts
                                     </a>
                                     <a href="/mail/{{$item->id}}-{{$item->access_token}}" class="btn btn-dark">
                                         Get Mail

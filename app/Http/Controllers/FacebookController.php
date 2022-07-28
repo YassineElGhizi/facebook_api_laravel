@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\FacebookPage;
 use App\Models\Post;
 use App\Models\User;
-use App\Page;
 use App\Services\FacebookService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class FacebookController extends Controller
 {
@@ -19,6 +19,20 @@ class FacebookController extends Controller
     public function __construct()
     {
         $this->facebook = new FacebookService();
+    }
+
+    public function delete_post(Request $request)
+    {
+        $this->facebook->delete_post_by_id($request->page_id, $request->page_token, Auth::user()->token);
+        Session::flash('message', "Post Has Been delete successfully");
+        return back();
+    }
+
+    public function update_post(Request $request)
+    {
+        Session::flash('message', "Post Has Been updated successfully");
+        $this->facebook->update_post_by_id($request->page_id, $request->page_token, $request->new_message);
+        return back();
     }
 
     public function facebook_provider()
@@ -125,8 +139,6 @@ class FacebookController extends Controller
 
     public function create_post(Request $request)
     {
-
-
         $isSchedule = $request->inlineCheckbox1;
         $description = $request->description;
         $date = $request->dateSchedule;
@@ -144,17 +156,12 @@ class FacebookController extends Controller
         else
             $data = ['message' => $description];
 
+        $this->facebook->post($accountId, $tokenPage, $data, $images);
 
-        $content = $data;
-        $this->facebook->post($accountId, $tokenPage, $content, $images);
-
+        Session::flash('message', "Post Has Been created successfully");
         return back();
+
     }
 
-    public function delete_post(Request $request)
-    {
-        $this->facebook->delete_post_by_id($request->page_id, $request->page_token, Auth::user()->token);
-        return back();
-    }
 
 }

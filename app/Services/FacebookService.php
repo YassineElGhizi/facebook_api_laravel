@@ -127,11 +127,7 @@ class FacebookService extends ServiceProvider
     private function postData($accessToken, $endpoint, $data)
     {
         try {
-            $response = $this->facebook->post(
-                $endpoint,
-                $data,
-                $accessToken
-            );
+            $response = $this->facebook->post($endpoint, $data, $accessToken);
             return $response->getGraphNode();
 
         } catch (FacebookResponseException $e) {
@@ -143,32 +139,27 @@ class FacebookService extends ServiceProvider
 
     public function delete_post_by_id($post_id, $page_token, $user_token)
     {
-
-//        return $this->facebook->delete("https://graph.facebook.com/" . $post_id . "?access_token=" . $page_token);
         return $this->facebook->delete("/" . $post_id . "?access_token=" . $page_token);
+    }
 
+    public function update_post_by_id($post_id, $page_token, $message)
+    {
+        return $this->facebook->post("/" . $post_id . "?message=" . $message . "&access_token=" . $page_token);
     }
 
 
-    public function post($accountId, $accessToken, $content, $images = [])
+    public function post($accountId, $accessToken, $data, $images = [])
     {
-        $data = $content;
-
-        // i check if exist file
         if ($images != []) {
             $attachments = $this->uploadImages($accountId, $accessToken, $images);
-
             foreach ($attachments as $i => $attachment) {
                 $data["attached_media[$i]"] = "{\"media_fbid\":\"$attachment\"}";
             }
         }
 
         try {
-
             return $this->postData($accessToken, "$accountId/feed", $data);
-
         } catch (\Exception $e) {
-            return false;
         }
     }
 
@@ -176,8 +167,6 @@ class FacebookService extends ServiceProvider
     private function uploadImages($accountId, $accessToken, $images = [])
     {
         $attachments = [];
-
-
         $data = [
             'source' => $this->facebook->fileToUpload($images),
         ];
@@ -190,14 +179,8 @@ class FacebookService extends ServiceProvider
         }
         return $attachments;
 
-
-        /// this code for multipl Files
         foreach ($images as $image) {
             if (!file_exists($image)) continue;
-
-
-            var_dump($image);
-
             $data = [
                 'source' => $this->facebook->fileToUpload($image),
             ];

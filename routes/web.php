@@ -30,6 +30,7 @@ Route::group(['prefix' => 'auth/facebook'], function () {
 Route::get('/get_post/{id}-{token}', [\App\Http\Controllers\FacebookController::class, 'get_post']);
 Route::post('/post', [\App\Http\Controllers\FacebookController::class, 'create_post']);
 Route::post('/delete_post', [\App\Http\Controllers\FacebookController::class, 'delete_post']);
+Route::post('/update_post', [\App\Http\Controllers\FacebookController::class, 'update_post']);
 
 #Mail Related
 Route::get('/mail/{id}-{token}', [\App\Http\Controllers\MailController::class, 'send']);

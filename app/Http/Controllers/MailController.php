@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Mail\weeklyEmail;
 use App\Services\FacebookService;
 use Carbon\Carbon;
-use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 
 
 class MailController extends Controller
@@ -37,6 +37,8 @@ class MailController extends Controller
         $mail = $user->email;
         $mail = str_replace("@Gh'z", "@gmail.com", $mail);
         Mail::to($mail)->send(new weeklyEmail(env('APP_NAME', false), $cnt));
+
+        Session::flash('message', "A mail has been send successful");
 
         return back();
     }

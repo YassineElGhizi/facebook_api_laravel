@@ -1,6 +1,12 @@
 @include('components.bootsrap_imports')
 
 <div class="container">
+
+    @if(Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    @endif
+
+
     <div class="row justify-content-center">
 
         <div class="col-md-12">
@@ -46,6 +52,13 @@
                                         <input hidden type="text" name="page_token" value="{{$tokenPage}}">
                                         <input hidden type="text" name="page_id" value="{{$item->id_page}}">
                                         <button type="submit" class="btn btn-danger" >Delete</button>
+                                    </form>
+                                    <form action="/update_post" method="post">
+                                        @csrf
+                                        <input hidden type="text" name="page_token" value="{{$tokenPage}}">
+                                        <input hidden type="text" name="page_id" value="{{$item->id_page}}">
+                                        <button type="submit" class="btn btn-warning" >Update</button>
+                                        <input type="text" name="new_message" placeholder="New Message value">
                                     </form>
 
                                 </td>
